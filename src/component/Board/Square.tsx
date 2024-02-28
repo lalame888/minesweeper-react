@@ -25,7 +25,7 @@ export function Square(props: SquareProps){
         borderRadius: 4,
         margin: 1,
         borderColor: '#8e9ba9',
-
+        aspectRatio: 1,
     }
     const numberStyle: CSSProperties = {
         color: props.data.value === 1 ? 'white' : props.data.value === 2 ? '#65d60d':'#f9067b',

@@ -1,5 +1,4 @@
 'use client';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from "react-redux";
 import { store } from "@/redux";
 import { useEffect, useState } from "react";
@@ -11,7 +10,7 @@ export default function Home() {
   const [settingValue, setSettingValue] = useState<GameConstructor>(
     {
       rowSize: 10, colSize: 5, 
-      minesNumber: 5, initIndex:{row: 0, col:0}
+      minesNumber: 15, initIndex:{row: 0, col:0}
     });
   const [game, setGame] = useState<Game | undefined>(undefined)
   useEffect(()=>{
