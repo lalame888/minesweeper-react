@@ -10,7 +10,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 export default function Home() {
   const [settingValue, setSettingValue] = useState<GameConstructor>(
     {
-      rowSize: 14, colSize: 4, 
+      rowSize: 10, colSize: 5, 
       minesNumber: 5, initIndex:{row: 0, col:0}
     });
   const [game, setGame] = useState<Game | undefined>(undefined)
@@ -19,27 +19,32 @@ export default function Home() {
   },[settingValue])
   return (
     <Provider store={store}>
-      <Container style={{marginTop: 20, marginBottom: 20}}>
-        <Row >
-          <Col xs={12} sm={8}>
-
-          {game && 
-          <Board
-            data={game.board}
-            onClick={()=> {}}
-          />
-        }
-          </Col>
-          <Col xs={12} sm={4}>
-
-            <SettingArea
-              value={settingValue}
-              setValue={setSettingValue}
+        <Container style={{marginTop: 20, marginBottom: 20}}>
+          <Row >
+            <Col sm={12} md={8} 
+              style={{
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center'
+              }}
+            >
+            {game && 
+            <Board
+              data={game.board}
+              onClick={()=> {}}
             />
-          </Col>
-        </Row>
-        
-      </Container>
+          }
+            </Col>
+            <Col sm={12} md={4}>
+
+              <SettingArea
+                value={settingValue}
+                setValue={setSettingValue}
+              />
+            </Col>
+          </Row>
+          
+        </Container>
     </Provider>
   );
 }

@@ -14,6 +14,7 @@ export function SettingArea(props: SettingAreaProps){
         padding: 20,
         backgroundColor: 'blue',
         display: 'flex',
+        height: '100%'
     }
     return (
         <div style={style}>
