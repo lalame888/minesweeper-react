@@ -24,10 +24,10 @@ export function SettingRow(props: SettingRowProps){
             controlId={'rowSize'}
             style={rowStyle}
         >
-            <Form.Label column xs={4}>
+            <Form.Label column xs={3} sm={3} md={6}lg={4}>
                 {props.name}
             </Form.Label>
-            <Col xs={8}>
+            <Col xs={9} sm={9} md={6} lg={8}>
                 <Form.Control
                 size='sm'
                 value={tempValue}

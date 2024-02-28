@@ -1,7 +1,7 @@
 import { GameConstructor } from "@/interface";
-import { CSSProperties, ChangeEvent } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { CSSProperties } from "react";
 import SettingRow from "./SettingRow";
+import Title from "./Title";
 
 interface SettingAreaProps {
     value: GameConstructor
@@ -10,9 +10,13 @@ interface SettingAreaProps {
 
 export function SettingArea(props: SettingAreaProps){
     const style: CSSProperties = {
-        border: '3px solid black',
-        padding: 20,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+    }
+    const settingStyle: CSSProperties = {
         backgroundColor: 'lightblue',
+        padding: 20,
         display: 'flex',
         flexDirection: 'column',
         height: '100%'
@@ -27,24 +31,28 @@ export function SettingArea(props: SettingAreaProps){
     }
     return (
         <div style={style}>
+            <Title/>
+            <div style={settingStyle}>
                 <SettingRow
                     value={props.value.rowSize}
-                    name={'直排數量'}
+                    name={'直排數'}
                     setValue={(newValue)=> onSettingChange(newValue, 'rowSize')}
                     max={300}
                 />
                 <SettingRow
                     value={props.value.colSize}
-                    name={'橫排數量'}
+                    name={'橫排數'}
                     setValue={(newValue)=> onSettingChange(newValue, 'colSize')}
                     max={300}
                 />
                 <SettingRow
                     value={props.value.minesNumber}
-                    name={'地雷數量'}
+                    name={'地雷數'}
                     setValue={(newValue)=> onSettingChange(newValue, 'minesNumber')}
                     max={props.value.rowSize * props.value.colSize}
                 />
+            </div>
+                
         </div>
     )
 

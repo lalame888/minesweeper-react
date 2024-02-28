@@ -34,8 +34,7 @@ export default function Home() {
             />
           }
             </Col>
-            <Col sm={12} md={4}>
-
+            <Col sm={12} md={4} style={{height: 'calc(100vh - 40px)'}}>
               <SettingArea
                 value={settingValue}
                 setValue={setSettingValue}
