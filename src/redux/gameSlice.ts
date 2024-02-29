@@ -1,4 +1,4 @@
-// gameSlice.ts
+import { MinesFunction } from '@/feature';
 import { BoardIndex, Game, GameConstructor, GameStatus } from '@/interface';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
@@ -21,19 +21,23 @@ const gameSlice = createSlice({
   initialState,
   reducers: {
     startGame: (state, action: PayloadAction<GameConstructor>) => {
-      const {minesNumber, rowSize, colSize} = action.payload;
+      const {minesNumber, rowSize, colSize, initIndex} = action.payload;
       if (minesNumber < rowSize * colSize && 
           minesNumber > 0 && 
           rowSize * colSize>0
         ) {
-        state.gameData = new Game(action.payload);
+        state.gameData = { 
+          board: MinesFunction.generateRandomMinesBoard(action.payload),
+          setting: action.payload
+        };
+        MinesFunction.openSquare(state.gameData.board, initIndex); //點開 
         state.time = 0;
         state.gameStatus = GameStatus['進行中'];
       }
     },
     giveUp: (state) => { // 放棄遊戲
       if (state.gameData) {
-        state.gameData.openAll(); // 全部開啟
+        MinesFunction.openAll(state.gameData.board); // 全部開啟
         state.gameStatus = GameStatus['失敗'];
       }
     },
@@ -51,17 +55,19 @@ const gameSlice = createSlice({
     },
     openSquare: (state, action: PayloadAction<BoardIndex>) => { //點擊方塊
       if (state.gameData) {
-        state.gameData.openSquare(action.payload);
+        MinesFunction.openSquare(state.gameData.board, action.payload);
         // 點完之後更新一下遊戲狀態（獲勝、死亡、繼續）
-        state.gameStatus = state.gameData.gameState;
+        state.gameStatus = MinesFunction.getGameState(state.gameData);
       }
     },
     setMark: (state, action: PayloadAction<BoardIndex>) => { // 插旗
-      state.gameData?.setMark(action.payload);
+      if (state.gameData) {
+        MinesFunction.setMark(state.gameData.board, action.payload)
+      }
     }
   }
 });
 
 // 匯出actions和reducer
-export const { startGame } = gameSlice.actions;
+export const gameAction = gameSlice.actions;
 export default gameSlice.reducer;

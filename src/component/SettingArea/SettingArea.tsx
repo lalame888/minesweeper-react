@@ -8,6 +8,7 @@ interface SettingAreaProps {
     setValue(newVale: GameConstructor): void
 }
 
+// TODO: 顯示時間、顯示狀態？、根據狀態鎖定input框的使用
 export function SettingArea(props: SettingAreaProps){
     const style: CSSProperties = {
         display: 'flex',

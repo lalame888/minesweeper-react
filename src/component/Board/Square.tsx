@@ -1,20 +1,21 @@
-'use client';
-
-import { SquareData, SquareStatus } from "@/interface";
-import { faFlag } from "@fortawesome/free-solid-svg-icons";
+import { ClickDirect, SquareData, SquareStatus } from "@/interface";
+import { faBomb, faFlag, faSkull } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CSSProperties } from "react";
+import { CSSProperties, useState } from "react";
+import { Button } from "react-bootstrap";
 
 interface SquareProps {
-    onClick(): void;
+    onClick(direct: ClickDirect): void;
     data: SquareData;
+    style?: CSSProperties
 }
-
-export function Square(props: SquareProps){
+function BaseButton(props: SquareProps & {children?: JSX.Element}) {
+    const [isHover, setIsHover] = useState<boolean>(false);
     const style: CSSProperties = {
         border: '1px solid black',
         fontFamily: 'monospace',
         userSelect: 'none',
+        cursor: 'pointer',
         color: 'white',
         backgroundColor: '#155c9e',
         display: 'flex',
@@ -23,12 +24,38 @@ export function Square(props: SquareProps){
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 4,
-        margin: 1,
+        margin: 0.5,
         borderColor: '#8e9ba9',
         aspectRatio: 1,
+        filter: isHover ? 'brightness(0.92)' : undefined
+        
     }
+    const children = props.children === undefined ? <></> : props.children;
+    return (
+        <Button 
+            style={{...style, ...props.style}}
+            onMouseEnter={()=> setIsHover(true)}
+            onMouseLeave={()=> setIsHover(false)}
+            onMouseUp={(event)=>{
+                // 滑鼠起來才算點擊，且滑鼠需要在方塊上
+                if (!isHover) return;
+                if (event.button === ClickDirect['左鍵']) {
+                    props.onClick(ClickDirect['左鍵'])
+                } else {
+                    // 其他都視為右鍵
+                    props.onClick(ClickDirect['右鍵'])
+                }
+            }}
+            onContextMenu={(e)=> e.preventDefault()} // 禁用瀏覽器預設的右鍵選單
+        >
+            {children}
+        </Button>
+    )
+}
+
+export function Square(props: SquareProps){
     const numberStyle: CSSProperties = {
-        color: props.data.value === 1 ? 'white' : props.data.value === 2 ? '#65d60d':'#f9067b',
+        color: props.data.value === 1 ? 'white' : props.data.value === 2 ? '#65d60d': '#ff82e1',
         backgroundColor: '#155c9e',
         borderColor: '#465565',
         boxShadow: 'rgb(0 0 0 / 10%) 1px -2px 1px 0px inset', // 立體陰影
@@ -45,38 +72,61 @@ export function Square(props: SquareProps){
         borderColor: '#8e9ba9',
         boxShadow: 'rgb(126 182 247 / 29%) 1px -3px 3px 0px inset', // 灰色立體陰影
     }
-    return (
-        <div style={{...style, ...numberStyle}}>
-            {props.data.value > 0 && props.data.value}
-        </div>
-    )
-    if (props.data.status === SquareStatus['未開啟']) {
-        return (
-            <div style={{...style, ...blankStyle}}/>
-        )
-    } else if (props.data.status === SquareStatus['標記旗子']) {
-        return (
-            <div style={{...style, ...markStyle}}>
-                <FontAwesomeIcon icon={faFlag}/>
-            </div>
-        )
-    } else {
-        // 開啟的
-        if (!props.data.isMines) { // 是數字
-            return (
-                <div style={{...style, ...numberStyle}}>
-                    {props.data.value > 0 && props.data.value}
-                </div>
-            )
-            
-        }
+    const bombStyle: CSSProperties = {
+        ...markStyle,
+        color: 'black'
     }
-    return (
-        <div style={{...style, ...numberStyle}}>
-            
-            {props.data.value > 0 && props.data.value}
-        </div>
-    )
-
+    switch (props.data.status) {
+        case SquareStatus['未開啟']:
+            return (
+                <BaseButton
+                    {...props}
+                    style={blankStyle}
+                />
+            );
+        case SquareStatus['標記旗子']:
+            return (
+                <BaseButton
+                    {...props}
+                    style={markStyle}
+                >
+                    <FontAwesomeIcon icon={faFlag}/>
+                </BaseButton>
+            );
+        case SquareStatus['死亡']:
+            return (
+                <BaseButton
+                        {...props}
+                        style={bombStyle}
+                    >
+                    <FontAwesomeIcon icon={faSkull}/>
+                </BaseButton>
+            );
+        case SquareStatus['開啟']: {
+            if (!props.data.isMines) {
+                // 是數字
+                return (
+                    <BaseButton
+                        {...props}
+                        style={numberStyle}
+                    >
+                        {props.data.value > 0 ? <span>{props.data.value}</span> : <></>}
+                    </BaseButton>
+                )
+            } else {
+                // 遊戲結束導致方格開啟的炸彈
+                return (
+                    <BaseButton
+                        {...props}
+                        style={bombStyle}
+                    >
+                        <FontAwesomeIcon icon={faBomb}/>
+                    </BaseButton>
+                )
+            }
+        }
+        default: 
+            throw new Error(`方格狀態未實作: ${props.data.status}`) 
+    }
 }
 export default  Square;

@@ -1,12 +1,9 @@
-'use client';
-
-import { BoardIndex, SquareData } from "@/interface";
+import { BoardIndex, ClickDirect, SquareData } from "@/interface";
 import { CSSProperties } from "react";
 import Square from "./Square";
-import { Row } from "react-bootstrap";
 
 interface BoardProps {
-    onClick(index: BoardIndex): void;
+    onClick(index: BoardIndex, direct: ClickDirect): void;
     data: SquareData[][];
 }
 
@@ -33,11 +30,10 @@ export function Board(props: BoardProps){
                         row.map((col, colIndex)=>{
                             return <Square 
                                 data={col} 
-                                onClick={()=> props.onClick({row: rowIndex, col: colIndex})}
+                                onClick={(direct: ClickDirect)=> props.onClick({row: rowIndex, col: colIndex}, direct)}
                                 key={`${rowIndex}, ${colIndex}`}
                             />
                         })}
-
                     </div>
                 )
             })}
