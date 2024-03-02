@@ -48,11 +48,7 @@ export default function GameApp() {
           />
         </Col>
         <Col sm={12} md={4} style={settingAreaStyle}>
-          <SettingArea
-            gameStatus={gameStatus}
-            value={gameData.setting}
-            setValue={(setting)=>dispatch(gameAction.settingEmpty(setting))}
-          />
+          <SettingArea/>
         </Col>
       </Row>
     </Container>

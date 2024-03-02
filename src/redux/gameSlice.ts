@@ -48,8 +48,13 @@ const gameSlice = createSlice({
         state.gameStatus = GameStatus['失敗'];
       }
     },
-    initGame: (state) => { // 重新開始回到設定
-      state = initialState;
+    resetGame: (state) => { // 遊戲重新開始
+      const {rowSize, colSize} = state.gameData.setting;
+      state.gameData = {
+        ...state.gameData,
+        board: MinesFunction.createEmptyBoard(rowSize, colSize)
+      };
+      state.gameStatus = GameStatus['初始化'];
     },
     pauseTime: (state) => { // 暫停遊戲
       state.gameStatus = GameStatus['暫停'];
