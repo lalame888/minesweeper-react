@@ -20,7 +20,7 @@ export function generateRandomMinesBoard(setting: GameConstructor) {
     while (minesSet.size < setting.minesNumber) {
         const row = Math.floor(Math.random() * setting.rowSize);
         const col = Math.floor(Math.random() * setting.colSize);
-        if (row === setting.initIndex.col && col === setting.initIndex.row) {
+        if (row === setting.initIndex.row && col === setting.initIndex.col) {
             // 避開一開始點擊的位置，重新指定
             continue;
         }
@@ -43,14 +43,16 @@ export function generateRandomMinesBoard(setting: GameConstructor) {
     return newBoard;
 }
 
-// 直接改動狀態
-export function openAll(board: SquareData[][]): void {
+// 結束遊戲公開解答 直接改動狀態
+export function openMines(board: SquareData[][]): void {
     board.forEach((row)=> row.forEach((term) => {
-        if (term.status !== SquareStatus['死亡']) term.status = SquareStatus['開啟'];
+        if (term.status === SquareStatus['未開啟'] && term.isMines) term.status = SquareStatus['未標炸彈'];
+        else if (term.status === SquareStatus['標記旗子'] && !term.isMines) term.status = SquareStatus['錯標旗子'];
     }))
 }
 // 直接改動狀態
 export function openSquare(board: SquareData[][], boardIndex: BoardIndex): void{ 
+    console.log('openSquare!');
     const { row, col } = boardIndex;
     const term = board[row][col];
 
@@ -58,11 +60,11 @@ export function openSquare(board: SquareData[][], boardIndex: BoardIndex): void{
     if (term.status !== SquareStatus['未開啟']) return;
     if (term.isMines && term.status === SquareStatus['未開啟']) {
         term.status = SquareStatus['死亡'];
-        // 將其他所有的都開啟
-        openAll(board);
+        // 將其他所有的炸彈都開啟
+        openMines(board);
         return;
     } 
-    term.status = SquareStatus['開啟'];
+    term.status = SquareStatus['安全開啟'];
     
     if (term.value === 0) {
         for(let i=-1; i<2; i++) { // 處理周圍九宮格
@@ -77,7 +79,7 @@ export function openSquare(board: SquareData[][], boardIndex: BoardIndex): void{
                             openSquare(board, {row: checkRow, col: checkCol});
                         } else {
                             // 普通的數字
-                            check.status = SquareStatus['開啟'];
+                            check.status = SquareStatus['安全開啟'];
                         }
                     }
                 }
@@ -89,15 +91,15 @@ export function openSquare(board: SquareData[][], boardIndex: BoardIndex): void{
 export function setMark(board: SquareData[][],boardIndex: BoardIndex) { 
     const {row, col} = boardIndex;
     const term = board[row][col];
-    if (term.status !== SquareStatus['未開啟']) return;
-    term.status = SquareStatus['標記旗子'];
+    if (term.status === SquareStatus['未開啟']) term.status = SquareStatus['標記旗子'];
+    else if (term.status === SquareStatus['標記旗子']) term.status = SquareStatus['未開啟'];
 }
 export function getGameState(game: Game): GameStatus {
     const flatArr = game.board.flat();
     // 如果有死亡的，判輸
     if (flatArr.find((term)=> term.status === SquareStatus['死亡'])) return GameStatus['失敗'];
     // 如果未開啟+插旗的數量 === 地雷數，獲勝
-    if (flatArr.filter((t)=> t.status === SquareStatus['未開啟'] || t.status === SquareStatus['標記旗子']).length === game.setting.minesNumber) {
+    if (flatArr.filter((t)=> [SquareStatus['未開啟'], SquareStatus['標記旗子']].includes(t.status)).length === game.setting.minesNumber) {
         return GameStatus['勝利']
     }
     return GameStatus['進行中'];

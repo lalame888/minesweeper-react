@@ -3,16 +3,22 @@ import { BoardIndex, Game, GameConstructor, GameStatus } from '@/interface';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 type StateType = {
-  gameData: Game | undefined,
+  gameData: Game,
   gameStatus: GameStatus,
-  time: number,
+}
+
+const initSetting = {
+  rowSize: 1, colSize: 4, 
+  minesNumber: 1, initIndex:{row: 0, col:0}
 }
 
 // 初始狀態
 const initialState: StateType = {
-  gameData: undefined,
+  gameData: {
+    setting: initSetting,
+    board: MinesFunction.createEmptyBoard(initSetting.rowSize, initSetting.colSize)
+  },
   gameStatus: GameStatus['初始化'],
-  time: 0,
 };
 
 // 創建一個Slice
@@ -20,32 +26,30 @@ const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    startGame: (state, action: PayloadAction<GameConstructor>) => {
-      const {minesNumber, rowSize, colSize, initIndex} = action.payload;
+    startGame: (state, action: PayloadAction<BoardIndex>) => {
+      const initIndex= action.payload;
+      const {minesNumber,rowSize, colSize } = state.gameData.setting;
       if (minesNumber < rowSize * colSize && 
           minesNumber > 0 && 
           rowSize * colSize>0
         ) {
-        state.gameData = { 
-          board: MinesFunction.generateRandomMinesBoard(action.payload),
-          setting: action.payload
-        };
-        MinesFunction.openSquare(state.gameData.board, initIndex); //點開 
-        state.time = 0;
-        state.gameStatus = GameStatus['進行中'];
+          const setting = {...state.gameData.setting, initIndex};
+          state.gameData = { 
+            board: MinesFunction.generateRandomMinesBoard(setting),
+            setting
+          };
+          MinesFunction.openSquare(state.gameData.board, initIndex); //點開 
+          state.gameStatus = MinesFunction.getGameState(state.gameData);
       }
     },
     giveUp: (state) => { // 放棄遊戲
       if (state.gameData) {
-        MinesFunction.openAll(state.gameData.board); // 全部開啟
+        MinesFunction.openMines(state.gameData.board); // 開啟
         state.gameStatus = GameStatus['失敗'];
       }
     },
     initGame: (state) => { // 重新開始回到設定
       state = initialState;
-    },
-    incrementTime: (state) => { // 增加秒數
-      state.time += 1;
     },
     pauseTime: (state) => { // 暫停遊戲
       state.gameStatus = GameStatus['暫停'];
@@ -64,7 +68,14 @@ const gameSlice = createSlice({
       if (state.gameData) {
         MinesFunction.setMark(state.gameData.board, action.payload)
       }
-    }
+    },
+    settingEmpty: (state, action: PayloadAction<GameConstructor>) => {
+      const { rowSize, colSize } = action.payload;
+      state.gameData = {
+        setting: action.payload,
+        board: MinesFunction.createEmptyBoard(rowSize, colSize)
+      };
+    },
   }
 });
 

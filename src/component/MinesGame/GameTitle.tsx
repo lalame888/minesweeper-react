@@ -1,13 +1,12 @@
-// 踩地雷上面的那個笑臉跟死掉的臉，開對就笑一下
-
-import { GameStatus, SquareData, SquareStatus } from "@/interface";
+import { Game, GameStatus, SquareStatus } from "@/interface";
 import { IconDefinition, faFaceDizzy, faFaceLaughSquint, faFaceMeh, faFaceSmileBeam } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 
 interface GameTitleProps {
-    board: SquareData[][];
+    game: Game;
     gameState: GameStatus;
+    time: number
 }
 enum Status {
     '笑臉',
@@ -19,6 +18,9 @@ export function GameTitle(props: GameTitleProps){
     const [showStatus, setShowStatus] = useState<Status>(Status['平常']);
     const openCount = useRef<number>(0);
     const timeRef = useRef<NodeJS.Timeout>();
+    const countMines = useMemo(()=>{
+        return props.game.setting.minesNumber - props.game.board.flat().filter((t)=> t.status === SquareStatus['標記旗子']).length
+    },[props.game])
     useEffect(()=>{
         switch (props.gameState) {
             case GameStatus['失敗']:
@@ -29,7 +31,7 @@ export function GameTitle(props: GameTitleProps){
                 break;
             case GameStatus['進行中']: {
                 // 計算
-                const count = props.board.flat().filter((term)=> term.status === SquareStatus['開啟']).length;
+                const count = props.game.board.flat().filter((term)=> term.status === SquareStatus['安全開啟']).length;
                 if (count > openCount.current ) { // 開的數量變多了
                     setShowStatus(Status['笑臉']);
                     openCount.current =  count;
@@ -41,15 +43,15 @@ export function GameTitle(props: GameTitleProps){
                 setShowStatus(Status['平常']);
                 break;
         }
-    },[props.board, props.gameState])
+    },[props.game.board, props.gameState])
 
     useEffect(()=>{
-        // 笑臉維持0.5秒？就要變回去
+        // 笑臉維持0.3秒就要變回去
         if (showStatus === Status['笑臉']) {
             if (timeRef.current) clearTimeout(timeRef.current);
             timeRef.current = setTimeout(()=>{
                 setShowStatus(Status['平常'])
-            }, 1000)
+            }, 300)
         } else if (showStatus === Status['死亡'] || showStatus === Status['勝利']) {
             // 取消會變回平常臉的setTimeout
             if (timeRef.current) clearTimeout(timeRef.current);
@@ -70,17 +72,51 @@ export function GameTitle(props: GameTitleProps){
 
     const style: CSSProperties = {
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         alignItems: 'center',
-        fontSize: 24,
-        background: 'lightblue'
+        width: '100%',
+        padding: 5,
+        fontSize: '24px',
+    }
+    const hrStyle: CSSProperties = {
+        marginTop:5, 
+        marginBottom:10, 
+        borderColor: 'darkblue'
     }
 
     return (
+        <div style={{maxWidth: '100%'}}>
+            <div style={style}>
+                <NumberView name={'剩餘標記'} value={countMines}/>
+                <FontAwesomeIcon icon={icon} style={{color: 'white'}}/>
+                <NumberView name={'計時'} value={props.time}/>
+            </div>
+        <hr style={hrStyle}/>
+        </div>
+    )
+}
+
+function NumberView(props: {value: number, name: string}) {
+    const style: CSSProperties = {
+        backgroundColor: 'white',
+        border: '1px solid, white',
+        borderRadius: '3px',
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: '10px',
+        marginLeft: '10px',
+        flexDirection: 'column',
+    }
+    const textStyle: CSSProperties = {
+        fontSize: 15,
+        wordBreak: 'keep-all'
+    }
+    return (
         <div style={style}>
-            <FontAwesomeIcon
-                icon={icon}
-            />
+            <span style={textStyle}>{props.name}</span>
+            <span>{props.value}</span>
         </div>
     )
 }

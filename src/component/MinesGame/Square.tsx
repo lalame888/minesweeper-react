@@ -1,7 +1,7 @@
 import { ClickDirect, SquareData, SquareStatus } from "@/interface";
 import { faBomb, faFlag, faSkull } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CSSProperties, useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import { Button } from "react-bootstrap";
 
 interface SquareProps {
@@ -53,7 +53,11 @@ function BaseButton(props: SquareProps & {children?: JSX.Element}) {
     )
 }
 
+// 按按鈕的時候，因為物件複製的責任給Redux toolkit了
+// 似乎只要有改動一個方格狀態，整個物件都有一起更動，導致按一個按鈕所有按鈕都重新渲染
+// 加 React.memo 無效
 export function Square(props: SquareProps){
+    console.log('Square render');
     const numberStyle: CSSProperties = {
         color: props.data.value === 1 ? 'white' : props.data.value === 2 ? '#65d60d': '#ff82e1',
         backgroundColor: '#155c9e',
@@ -66,7 +70,6 @@ export function Square(props: SquareProps){
         color: 'red',
         boxShadow: 'rgba(255, 8, 8, 0.29) 0px -1px 3px 1px inset', // 紅色立體陰影
     }
-
     const blankStyle: CSSProperties = {
         backgroundColor: '#e2ecf7',
         borderColor: '#8e9ba9',
@@ -76,6 +79,11 @@ export function Square(props: SquareProps){
         ...markStyle,
         color: 'black'
     }
+    const errorMarkStyle: CSSProperties = {
+        ...markStyle,
+        backgroundColor: '#ff8c8cf5'
+    }
+
     switch (props.data.status) {
         case SquareStatus['未開啟']:
             return (
@@ -102,31 +110,38 @@ export function Square(props: SquareProps){
                     <FontAwesomeIcon icon={faSkull}/>
                 </BaseButton>
             );
-        case SquareStatus['開啟']: {
-            if (!props.data.isMines) {
-                // 是數字
-                return (
-                    <BaseButton
-                        {...props}
-                        style={numberStyle}
-                    >
-                        {props.data.value > 0 ? <span>{props.data.value}</span> : <></>}
-                    </BaseButton>
-                )
-            } else {
-                // 遊戲結束導致方格開啟的炸彈
-                return (
-                    <BaseButton
-                        {...props}
-                        style={bombStyle}
-                    >
-                        <FontAwesomeIcon icon={faBomb}/>
-                    </BaseButton>
-                )
-            }
-        }
+        case SquareStatus['安全開啟']: 
+            return (// 數字或空格
+                <BaseButton
+                    {...props}
+                    style={numberStyle}
+                >
+                    {props.data.value > 0 ? <span>{props.data.value}</span> : <></>}
+                </BaseButton>
+            );
+        case SquareStatus['未標炸彈']: 
+            // 遊戲結束導致方格開啟的炸彈
+            return (
+                <BaseButton
+                    {...props}
+                    style={bombStyle}
+                >
+                    <FontAwesomeIcon icon={faBomb}/>
+                </BaseButton>
+            );
+        case SquareStatus['錯標旗子']:
+            // 遊戲結束 標示錯誤的旗子
+            return (
+                <BaseButton
+                    {...props}
+                    style={errorMarkStyle}
+                >
+                    <FontAwesomeIcon icon={faFlag}/>
+                </BaseButton>
+            );
+        
         default: 
             throw new Error(`方格狀態未實作: ${props.data.status}`) 
     }
-}
+};
 export default  Square;

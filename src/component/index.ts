@@ -1,3 +1,2 @@
-export * from './Board/Board'
+export * from './MinesGame/MinesGame'
 export * from './SettingArea/SettingArea'
-export * from './GameTitle'

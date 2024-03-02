@@ -1,9 +1,10 @@
-import { GameConstructor } from "@/interface";
+import { GameConstructor, GameStatus } from "@/interface";
 import { CSSProperties } from "react";
 import SettingRow from "./SettingRow";
 import Title from "./Title";
 
 interface SettingAreaProps {
+    gameStatus: GameStatus
     value: GameConstructor
     setValue(newVale: GameConstructor): void
 }
@@ -30,23 +31,27 @@ export function SettingArea(props: SettingAreaProps){
             props.setValue(newSetting)
         }
     }
+    const disabled = props.gameStatus !== GameStatus['初始化'];
     return (
         <div style={style}>
             <Title/>
             <div style={settingStyle}>
                 <SettingRow
+                    disabled={disabled}
                     value={props.value.rowSize}
                     name={'直排數'}
                     setValue={(newValue)=> onSettingChange(newValue, 'rowSize')}
-                    max={300}
+                    max={50}
                 />
                 <SettingRow
+                    disabled={disabled}
                     value={props.value.colSize}
                     name={'橫排數'}
                     setValue={(newValue)=> onSettingChange(newValue, 'colSize')}
-                    max={300}
+                    max={50}
                 />
                 <SettingRow
+                    disabled={disabled}
                     value={props.value.minesNumber}
                     name={'地雷數'}
                     setValue={(newValue)=> onSettingChange(newValue, 'minesNumber')}

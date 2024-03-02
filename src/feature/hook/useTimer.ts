@@ -1,33 +1,22 @@
 import { GameStatus } from '@/interface';
-import { AppDispatch, gameAction, useReduxSelector } from '@/redux';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
 
-export const useTimer = () => {
-    const time = useReduxSelector((state)=> state.game.time);
-    const gameStatus = useReduxSelector((state)=> state.game.gameStatus);
-    const dispatch: AppDispatch = useDispatch();
-    const isRunning = gameStatus === GameStatus['進行中'];
-
-    useEffect(() => {
+export const useTimer = (gameStatus: GameStatus) => {
+    const [time, setTime] = useState<number>(0);
+    useEffect(()=>{
         let interval: NodeJS.Timeout;
-        if (isRunning) {
+        if (gameStatus === GameStatus['進行中']) {
             interval = setInterval(() => {
-                dispatch(gameAction.incrementTime());
+                setTime((oldTime)=> oldTime + 1);
             }, 1000);
+        } else if (gameStatus === GameStatus['初始化']) {
+            setTime(0);
         }
         return () => clearInterval(interval);
-    }, [isRunning, dispatch]);
+    },[gameStatus]);
+    
 
-    const startTimer = () => {
-        dispatch(gameAction.continueTime());
-    };
-
-    const stopTimer = () => {
-        dispatch(gameAction.pauseTime());
-    };
-
-    return { time, isRunning, startTimer, stopTimer };
+    return { time };
 };
 
 export default useTimer;
