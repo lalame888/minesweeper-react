@@ -2,6 +2,7 @@
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  distDir: 'dist',
   basePath: '/minesweeper-react'
 }
 
