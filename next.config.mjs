@@ -1,10 +1,14 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
-  output: 'export',
+  output: isProd ? 'export' : undefined,
   reactStrictMode: true,
   distDir: 'dist',
-  basePath: '/minesweeper-react',
-  assetPrefix: 'https://lalame888.github.io/minesweeper-react/'
+  basePath: isProd ? '/minesweeper-react' : undefined,
+  assetPrefix: isProd
+    ? 'https://lalame888.github.io/minesweeper-react/'
+    : undefined
 }
 
 export default nextConfig

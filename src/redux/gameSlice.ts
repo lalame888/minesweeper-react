@@ -8,8 +8,8 @@ type StateType = {
 }
 
 const initSetting = {
-  rowSize: 1, colSize: 4, 
-  minesNumber: 1, initIndex:{row: 0, col:0}
+  rowSize: 8, colSize: 8, 
+  minesNumber: 10, initIndex:{row: 0, col:0}
 }
 
 // 初始狀態
