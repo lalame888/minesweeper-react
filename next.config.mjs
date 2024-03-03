@@ -5,7 +5,6 @@ const nextConfig = {
   output: isProd ? 'export' : undefined,
   reactStrictMode: true,
   distDir: 'dist',
-  //   basePath: isProd ? '/minesweeper-react' : undefined,
   assetPrefix: isProd
     ? 'https://lalame888.github.io/minesweeper-react/'
     : undefined
