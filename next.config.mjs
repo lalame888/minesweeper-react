@@ -2,8 +2,7 @@
 const nextConfig = {
   output: 'export',
   distDir: 'dist',
-  assetPrefix: './',
-  basePath: './'
+  basePath: '/minesweeper-react'
 }
 
 export default nextConfig
