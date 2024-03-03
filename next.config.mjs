@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = { output: 'export', distDir: 'dist' }
+const nextConfig = {
+  output: 'export',
+  distDir: 'dist',
+  assetPrefix: './',
+  basePath: './'
+}
 
 export default nextConfig
