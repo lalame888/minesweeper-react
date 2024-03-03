@@ -28,4 +28,3 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           branch: gh-pages
           folder: dist
-          repository-name: https://lalame888.github.io/minesweeper-react/
