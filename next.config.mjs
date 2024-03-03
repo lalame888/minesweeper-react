@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  output: 'next export',
   distDir: 'dist',
   basePath: '/minesweeper-react',
   assetPrefix: '/minesweeper-react/'
