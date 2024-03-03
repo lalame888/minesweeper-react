@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  output: 'next export',
   reactStrictMode: true,
   distDir: 'dist',
   basePath: '/minesweeper-react'
