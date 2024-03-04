@@ -52,7 +52,6 @@ export function openMines(board: SquareData[][]): void {
 }
 // 直接改動狀態
 export function openSquare(board: SquareData[][], boardIndex: BoardIndex): void{ 
-    console.log('openSquare!');
     const { row, col } = boardIndex;
     const term = board[row][col];
 

@@ -57,7 +57,6 @@ function BaseButton(props: SquareProps & {children?: JSX.Element}) {
 // 似乎只要有改動一個方格狀態，整個物件都有一起更動，導致按一個按鈕所有按鈕都重新渲染
 // 加 React.memo 無效
 export function Square(props: SquareProps){
-    console.log('Square render');
     const numberStyle: CSSProperties = {
         color: props.data.value === 1 ? 'white' : props.data.value === 2 ? '#65d60d': '#ff82e1',
         backgroundColor: '#155c9e',
