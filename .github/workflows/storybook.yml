@@ -11,8 +11,8 @@ permissions:
 jobs:
   deploy:
     environment:
-      name: storybook
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: github-pages
+      url: https://lalame888.github.io/minesweeper-react/storybook
     runs-on: ubuntu-latest
     steps:
       - id: build-publish
