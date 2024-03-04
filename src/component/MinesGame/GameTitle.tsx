@@ -102,7 +102,7 @@ export function GameTitle(props: GameTitleProps){
 function NumberView(props: {value: number, name: string}) {
     const style: CSSProperties = {
         backgroundColor: 'white',
-        border: '1px solid, white',
+        border: '1px solid white',
         borderRadius: '3px',
         width: '100%',
         display: 'flex',
@@ -111,6 +111,8 @@ function NumberView(props: {value: number, name: string}) {
         marginRight: '10px',
         marginLeft: '10px',
         flexDirection: 'column',
+        color: 'black'
+
     }
     const textStyle: CSSProperties = {
         fontSize: 15,
