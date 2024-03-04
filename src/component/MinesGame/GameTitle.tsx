@@ -79,6 +79,7 @@ export function GameTitle(props: GameTitleProps){
         width: '100%',
         padding: 5,
         fontSize: '24px',
+        color: 'black'
     }
     const hrStyle: CSSProperties = {
         marginTop:5, 
