@@ -1,10 +1,6 @@
-import { CSSProperties, useCallback } from "react";
-import { BoardIndex, ClickDirect, GameStatus } from "@/interface";
+import { CSSProperties } from "react";
 import { MinesGame, SettingArea } from "@/component";
 import { Col, Container, Row } from 'react-bootstrap';
-import { useDispatch } from "react-redux";
-import { AppDispatch, gameAction, useReduxSelector } from "@/redux";
-import { useTimer } from "@/feature";
 
   // TODO: 行有餘力：做一個Storybook & jest單元測試
 

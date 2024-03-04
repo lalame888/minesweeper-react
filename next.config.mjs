@@ -4,7 +4,6 @@ const isProd = process.env.NODE_ENV === 'production'
 const nextConfig = {
   output: isProd ? 'export' : undefined,
   reactStrictMode: true,
-  //   distDir: 'dist',
   assetPrefix: isProd
     ? 'https://lalame888.github.io/minesweeper-react/'
     : undefined

@@ -1,16 +1,14 @@
-import { BoardIndex, ClickDirect, Game, GameStatus } from "@/interface";
+import { BoardIndex, ClickDirect, GameStatus } from "@/interface";
 import { CSSProperties, useCallback } from "react";
 import GameTitle from "./GameTitle";
 import Board from "./Board";
 import { AppDispatch, gameAction, useReduxSelector } from "@/redux";
-import { useTimer } from "@/feature";
 import { useDispatch } from "react-redux";
 
 
 export function MinesGame(){
     const gameData = useReduxSelector((state)=> state.game.gameData);
     const gameStatus = useReduxSelector((state)=> state.game.gameStatus);
-    const {time} = useTimer(gameStatus);
     const dispatch: AppDispatch = useDispatch();
     const clickSquare = useCallback((index: BoardIndex, direct: ClickDirect) => {
         if (gameStatus === GameStatus['初始化']) {
@@ -35,7 +33,6 @@ export function MinesGame(){
             <GameTitle
                 game={gameData}
                 gameState={gameStatus}
-                time={time}
             />
             <Board
                 board={gameData.board}

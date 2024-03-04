@@ -1,10 +1,10 @@
 export enum SquareStatus {
-    '未開啟',
-    '安全開啟',
-    '標記旗子',
-    '死亡',
-    '錯標旗子', // 最後公開解答的時候 非炸彈但是判定成炸彈
-    '未標炸彈', // 最後公開解答的時候 是炸彈但是沒有標出來
+    '未開啟' = 'unOpen',
+    '安全開啟' = 'safeOpen',
+    '標記旗子' = 'mark',
+    '死亡' = 'dead',
+    '錯標旗子' = 'errorMark', // 最後公開解答的時候 非炸彈但是判定成炸彈
+    '未標炸彈' = 'unMark', // 最後公開解答的時候 是炸彈但是沒有標出來
 }
 
 export type SquareData = {
@@ -30,11 +30,11 @@ export type GameConstructor = {
 }
 
 export enum GameStatus {
-    '初始化',
-    '進行中',
-    '暫停',
-    '失敗',
-    '勝利'
+    '初始化' = 'init',
+    '進行中' = 'running',
+    '暫停' = 'pause',
+    '失敗' = 'fail',
+    '勝利' = 'win'
 }
 
 export type Game = {

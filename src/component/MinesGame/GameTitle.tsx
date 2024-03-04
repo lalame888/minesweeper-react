@@ -1,3 +1,4 @@
+import { useTimer } from "@/feature";
 import { Game, GameStatus, SquareStatus } from "@/interface";
 import { IconDefinition, faFaceDizzy, faFaceLaughSquint, faFaceMeh, faFaceSmileBeam } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,7 +7,6 @@ import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 interface GameTitleProps {
     game: Game;
     gameState: GameStatus;
-    time: number
 }
 enum Status {
     '笑臉',
@@ -15,6 +15,8 @@ enum Status {
     '勝利'
 }
 export function GameTitle(props: GameTitleProps){
+    const {time} = useTimer(props.gameState);
+
     const [showStatus, setShowStatus] = useState<Status>(Status['平常']);
     const openCount = useRef<number>(0);
     const timeRef = useRef<NodeJS.Timeout>();
@@ -89,7 +91,7 @@ export function GameTitle(props: GameTitleProps){
             <div style={style}>
                 <NumberView name={'剩餘標記'} value={countMines}/>
                 <FontAwesomeIcon icon={icon} style={{color: 'white'}}/>
-                <NumberView name={'計時'} value={props.time}/>
+                <NumberView name={'計時'} value={time}/>
             </div>
         <hr style={hrStyle}/>
         </div>
