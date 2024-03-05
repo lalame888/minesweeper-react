@@ -22,7 +22,7 @@ export function SettingRow(props: SettingRowProps){
     return (
         <Form.Group 
             as={Row} 
-            controlId={'rowSize'}
+            controlId={`row-${props.name}`}
             style={rowStyle}
         >
             <Form.Label column xs={3} sm={3} md={6}lg={4}>
