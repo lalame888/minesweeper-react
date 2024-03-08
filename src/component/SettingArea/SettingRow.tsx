@@ -42,7 +42,12 @@ export function SettingRow(props: SettingRowProps){
                             // 有數值
                             let newValue = parseInt(e.target.value)
                             if (props.max !== undefined) newValue = Math.min(props.max, newValue);
-                            props.setValue(newValue)
+                            if (props.value === newValue) {
+                                // 和原本的數值一樣，把內部input填回去就好
+                                setTempValue(e.target.value)
+                            } else {
+                                props.setValue(newValue) // 傳到外面再進來
+                            }
                         }
                     }}
                     onBlur={()=> setTempValue(props.value.toString())}
